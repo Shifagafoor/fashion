@@ -9,35 +9,49 @@
 <body>
     <div class="signup-box">
         <h2>Create Account</h2>
-        <form>
+        <form method = "post">
+            {% csrf_token %}
+
             <div class="input-group">
-                <label >Full Name</label>
-                <input type="text" placeholder="Enter your name">
+                <label>First Name</label>
+                <input type="text" name="first_name" placeholder="Enter your first name" required>
+            </div>
+            <div class="input-group">
+                <label>Middle Name</label>
+                <input type="text" name="middle_name" placeholder="Enter your middle name">
+            </div>
+            <div class="input-group">
+                <label>Last Name</label>
+                <input type="text" name="last_name" placeholder="Enter your last name" required>
+            </div>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Enter your username" required>
             </div>
             <div class="input-group">
                 <label>Email</label>
-                <input type="email" placeholder="Enter your email">
+                <input type="email" name="email" placeholder="Enter your email" required>
             </div>
             <div class="input-group">
                 <label>Phone Number</label>
-                <input type="tel" placeholder="Enter your phone number">
+                <input type="tel" name="phone" placeholder="Enter your phone number" required>
             </div>
             <div class="input-group">
                 <label>Password</label>
-                <input type="password" placeholder="Create password">
+                <input type="password" name="password" placeholder="Create password" required>
             </div>
             <div class="input-group">
                 <label>Confirm Password</label>
-                <input type="password" placeholder="Confirm password">
+                <input type="password" name="confirm_password" placeholder="Confirm password" required>
             </div>
             <div class="checkbox">
-                <input type="checkbox">
+                <input type="checkbox" required>
                 I agree to the Terms & Conditions
             </div>
             <button>Create Account</button>
             <div class="bottom">
                 Already have an account?
-                <a href="login.html">Login</a>
+                <a href="{% url 'login' %}">Login</a>
             </div>
         </form>
     </div>
