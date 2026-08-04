@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Majestic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="signup-box">
+        <h2>Create Account</h2>
+        <form>
+            <div class="input-group">
+                <label >Full Name</label>
+                <input type="text" placeholder="Enter your name">
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" placeholder="Enter your email">
+            </div>
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="tel" placeholder="Enter your phone number">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" placeholder="Create password">
+            </div>
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input type="password" placeholder="Confirm password">
+            </div>
+            <div class="checkbox">
+                <input type="checkbox">
+                I agree to the Terms & Conditions
+            </div>
+            <button>Create Account</button>
+            <div class="bottom">
+                Already have an account?
+                <a href="login.html">Login</a>
+            </div>
+        </form>
+    </div>
+</body>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: poppins,sans-serif;
+    }
+    body{
+        background: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .signup-box{
+        width: 500px;
+        background: #fff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow:0 10px 25px rgba(0,0,0,.15);
+    }
+    .signup-box h2{
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .input-group{
+        margin-bottom: 18px;
+    }
+    .input-group label{
+        display: block;
+        margin-bottom:8px;
+        font-weight: 500;
+    }
+    .input-group input{
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+    }
+    button{
+        width: 100%;
+        padding: 14px;
+        background: #000;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    .bottom{
+        text-align: center;
+        margin-top: 20px;
+    }
+    .bottom a{
+        text-decoration: none;
+        color: #000;
+        font-weight: 600;
+    }
+    .checkbox{
+        margin-top:10px;
+        margin-bottom:15px;
+    }
+</style>
+</html>
