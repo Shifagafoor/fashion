@@ -11,6 +11,21 @@ def signup_page(request):
         email = request.POST['email']
         phone = request.POST['phone']
         password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        #password check
+        if password != confirm_password:
+            return render(request, 'signup.html', {'error': 'Passwords do not match!'})
+
+        #username already exists
+        if User.objects.filter(username=username).exists():
+            return render(request, 'signup.html', {'error': 'Username already exists!'})
+
+        #email already exists
+        if User.objects.filter(email=email).exists():
+            return render(request,'signup.html',{
+                'error':'Email already exists. Please use another email.'
+            })
 
         User.objects.create(
             first_name=first_name,
