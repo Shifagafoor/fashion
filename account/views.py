@@ -23,10 +23,23 @@ def signup_page(request):
         )
         return redirect('login')
     return render(request, 'signup.html')
+
+def login_page(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        try:
+            user = User.objects.get(username=username, password=password)
+            return redirect('home')
+        except User.DoesNotExist:
+            return render(request, 'login.html', {
+                'error': 'Invalid username or password'
+            })
+    return render (request, 'login.html')
+
 def home(request):
     return render(request, 'index.html')
-def login_page(request):
-    return render(request, 'login.html')
 def forgot_password(request):
     return render(request, 'forgot_password.html')
 def reset_password(request):

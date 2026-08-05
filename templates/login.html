@@ -15,21 +15,27 @@
         </div>
         <div class="right">
             <h2>Login</h2>
-            <form>
+            {% if error %}
+        <p style="color:red; text-align:center;">
+            {{ error }}
+        </p>
+        {% endif %}
+            <form method="POST">
+                {% csrf_token %}
                 <div class="input-box">
-                    <label>Email</label>
-                    <input type="email" placeholder="Enter your email" >
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter your username" required>
                 </div>
                 <div class="input-box">
                     <label>Password</label>
-                    <input type="password" placeholder="Enter your password" >
+                    <input type="password" name="password" placeholder="Enter your password" required>
                 </div>
                 <div class="forget">
-                    <a href="forgot-password.html">Forgot Password?</a>
+                    <a href="{% url 'forgot_password' %}">Forgot Password?</a>
                 </div>
-                <button class="btn">Login</button>
+                <button type="submit" class="btn">Login</button>
                 <div class="signup">Don't have an account?
-                    <a href="signup.html">Sign up</a>
+                    <a href="{% url 'signup' %}">Sign up</a>
                 </div>
             </form>
         </div>
