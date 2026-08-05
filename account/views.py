@@ -27,6 +27,12 @@ def signup_page(request):
                 'error':'Email already exists. Please use another email.'
             })
 
+        #phone
+        if User.objects.filter(phone=phone).exists():
+            return render(request,'signup.html',{
+                'error':'phone number already exists.please use another phone number.'
+            })
+
         User.objects.create(
             first_name=first_name,
             middle_name=middle_name,

@@ -9,6 +9,11 @@
 <body>
     <div class="signup-box">
         <h2>Create Account</h2>
+        {% if error %}
+        <div class="alert">
+            {{ error }}
+        </div>
+            {% endif %}
         <form method = "post">
             {% csrf_token %}
 
@@ -119,6 +124,16 @@
     .checkbox{
         margin-top:10px;
         margin-bottom:15px;
+    }
+    .alert{
+        background:#ffe5e5;
+        color:#d8000c;
+        border:1px solid #d8000c;
+        padding:12px;
+        border-radius:8px;
+        margin-bottom:20px;
+        text-align:center;
+        font-weight:500;
     }
 </style>
 </html>
