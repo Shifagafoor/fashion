@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import User
 
+
 # Create your views here.
 def signup_page(request):
     if request.method == 'POST':
@@ -13,36 +14,49 @@ def signup_page(request):
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
-    errors = {}
+        print("First Name:", first_name)
+        print("password:", password)
+        print("Confirm Password:", confirm_password)
+        errors = {}
 
-    #password check
-    if password != confirm_password:
-        errors['password_error'] ="password do not match"
+        #password check
+        if password != confirm_password:
+            errors['password_error'] ="password do not match"
 
-    #username already exists
-    if User.objects.filter(username=username).exists():
-        errors['username_error']="username already exist!"
+        #username already exists
+        if User.objects.filter(username=username).exists():
+            errors['username_error']="username already exist!"
 
-    #email already exists
-    if User.objects.filter(email=email).exists():
-        errors['email_error'] = "Email already exists!"
+        #email already exists
+        if User.objects.filter(email=email).exists():
+            errors['email_error'] = "Email already exists!"
 
-        #phone
-        if User.objects.filter(phone=phone).exists():
-            errors['phone_error'] = "Phone number already exists!"
+            #phone
+            if User.objects.filter(phone=phone).exists():
+                errors['phone_error'] = "Phone number already exists!"
 
-    #if any error 
-    if errors:
-        return render(request, 'signup.html',{
-            'errors':errors,
-            'first_name':first_name,
-            'middle_name':middle_name,
-            'last_name':last_name,
-            'username':username,
-            'email':email,
-            'phone':phone
-        })
-
+        #if any error 
+        if errors:
+            return render(request, 'signup.html',{
+                'errors':errors,
+                'first_name':first_name,
+                'middle_name':middle_name,
+                'last_name':last_name,
+                'username':username,
+                'email':email,
+                'phone':phone
+            })
+        else:
+            User.objects.create(
+                first_name=first_name,
+                middle_name=middle_name,
+                last_name=last_name,
+                username=username,
+                email=email,
+                phone=phone,
+                password=password
+            )
+            return redirect('login')
     return render(request, 'signup.html')
 
 def login_page(request):
