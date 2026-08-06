@@ -13,23 +13,23 @@ def signup_page(request):
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
-        errors = {}
+    errors = {}
 
-        #password check
-        if password != confirm_password:
-            errors['password_error'] ="password do not match"
+    #password check
+    if password != confirm_password:
+        errors['password_error'] ="password do not match"
 
-        #username already exists
-        if User.objects.filter(username=username).exists():
-            errors['username_error']="username already exist!"
+    #username already exists
+    if User.objects.filter(username=username).exists():
+        errors['username_error']="username already exist!"
 
-        #email already exists
-        if User.objects.filter(email=email).exists():
-            errors['email_error'] = "Email already exists!"
+    #email already exists
+    if User.objects.filter(email=email).exists():
+        errors['email_error'] = "Email already exists!"
 
-        #phone
-        if User.objects.filter(phone=phone).exists():
-            errors['phone_error'] = "Phone number already exists!"
+    #phone already exists
+    if User.objects.filter(phone=phone).exists():
+        errors['phone_error'] = "Phone number already exists!"
 
     #if any error 
     if errors:
