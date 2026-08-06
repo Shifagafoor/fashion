@@ -21,19 +21,27 @@ def signup_page(request):
 
         #username already exists
         if User.objects.filter(username=username).exists():
-            return render(request, 'signup.html', {'error': 'Username already exists!'})
+            errors['username_error']="username already exist!"
 
         #email already exists
         if User.objects.filter(email=email).exists():
-            return render(request,'signup.html',{
-                'error':'Email already exists. Please use another email.'
-            })
+            errors['email_error'] = "Email already exists!"
 
         #phone
         if User.objects.filter(phone=phone).exists():
-            return render(request,'signup.html',{
-                'error':'phone number already exists.please use another phone number.'
-            })
+            errors['phone_error'] = "Phone number already exists!"
+
+    #if any error 
+    if errors:
+        return render(request, 'signup.html',{
+            'errors':errors,
+            'first_name':first_name,
+            'middle_name':middle_name,
+            'last_name':last_name,
+            'username':username,
+            'email':email,
+            'phone':phone
+        })
 
         #if any error 
         if errors:
