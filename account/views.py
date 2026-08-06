@@ -27,9 +27,9 @@ def signup_page(request):
     if User.objects.filter(email=email).exists():
         errors['email_error'] = "Email already exists!"
 
-    #phone already exists
-    if User.objects.filter(phone=phone).exists():
-        errors['phone_error'] = "Phone number already exists!"
+        #phone
+        if User.objects.filter(phone=phone).exists():
+            errors['phone_error'] = "Phone number already exists!"
 
     #if any error 
     if errors:
