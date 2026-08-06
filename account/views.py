@@ -43,28 +43,6 @@ def signup_page(request):
             'phone':phone
         })
 
-        #if any error 
-        if errors:
-            return render(request, 'signup.html',{
-                'errors':errors,
-                'first_name':first_name,
-                'middle_name':middle_name,
-                'last_name':last_name,
-                'username':username,
-                'email':email,
-                'phone':phone
-            })
-
-        User.objects.create(
-            first_name=first_name,
-            middle_name=middle_name,
-            last_name=last_name,
-            username=username,
-            email=email,
-            phone=phone,
-            password=password
-        )
-        return redirect('login')
     return render(request, 'signup.html')
 
 def login_page(request):
