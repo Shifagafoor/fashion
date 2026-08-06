@@ -17,6 +17,7 @@ def signup_page(request):
         print("First Name:", first_name)
         print("password:", password)
         print("Confirm Password:", confirm_password)
+
         errors = {}
 
         #password check
@@ -72,6 +73,39 @@ def login_page(request):
                 'error': 'Invalid username or password'
             })
     return render (request, 'login.html')
+def login_page(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        try:
+            user = User.objects.get(username=username, password=password)
+
+            # Save logged-in user in session
+            request.session["user_id"] = user.id
+
+            return redirect("home")
+
+        except User.DoesNotExist:
+            return render(request, "login.html", {
+                "error": "Invalid username or password"
+            })
+
+    return render(request, "login.html")
+def profile(request):
+    if "user_id" not in request.session:
+        return redirect("login")
+
+    user = User.objects.get(id=request.session["user_id"])
+
+    return render(request, "profile.html", {
+        "user": user
+    })
+
+
+def logout_page(request):
+    request.session.flush()
+    return redirect("login")
 
 def home(request):
     return render(request, 'index.html')
