@@ -9,11 +9,6 @@
 <body>
     <div class="signup-box">
         <h2>Create Account</h2>
-        {% if error %}
-        <div class="alert">
-            {{ error }}
-        </div>
-            {% endif %}
         <form method = "post">
             {% csrf_token %}
 
@@ -31,19 +26,31 @@
             </div>
             <div class="input-group">
                 <label>Username</label>
-                <input type="text" name="username" placeholder="Enter your username" required>
+                <input type="text" name="username" value="{{ username }}" placeholder="Enter your username" required>
+                {% if errors.username_error %}
+                <p class="error">{{errors.username_error}}</p>
+                {% endif %}
             </div>
             <div class="input-group">
                 <label>Email</label>
-                <input type="email" name="email" placeholder="Enter your email" required>
+                <input type="email" name="email" value="{{ email }}" placeholder="Enter your email" required>
+                {% if errors.email_error %}
+                <p class="error">{{errors.email_error}}</p>
+                {% endif %}
             </div>
             <div class="input-group">
                 <label>Phone Number</label>
-                <input type="tel" name="phone" placeholder="Enter your phone number" required>
+                <input type="tel" name="phone" value="{{ phone }}" placeholder="Enter your phone number" required>
+                {% if errors.phone_error %}
+                <p class="error">{{errors.phone_error}}</p>
+                {% endif %} 
             </div>
             <div class="input-group">
                 <label>Password</label>
-                <input type="password" name="password" placeholder="Create password" required>
+                <input type="password" name="password"  placeholder="Create password" required>
+                {% if errors.password_error %}
+                <p class="error">{{errors.password_error}}</p>
+                {% endif %}
             </div>
             <div class="input-group">
                 <label>Confirm Password</label>
@@ -125,15 +132,11 @@
         margin-top:10px;
         margin-bottom:15px;
     }
-    .alert{
-        background:#ffe5e5;
-        color:#d8000c;
-        border:1px solid #d8000c;
-        padding:12px;
-        border-radius:8px;
-        margin-bottom:20px;
-        text-align:center;
-        font-weight:500;
+    .error{
+        color:#dc3545;
+        font-size: 13px;
+        margin-top: 5px;
+        font-weight: 500;
     }
 </style>
 </html>
