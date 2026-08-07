@@ -1,57 +1,421 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link href="{% static 'css/theme.css' %}" rel="stylesheet" />
-    <style>
+
+    <title>Edit Profile Information</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">   
+</head>
+<script>
+function previewImage(event) {
+    const image = document.getElementById('preview');
+    image.innerHTML = "";
+
+    const file = event.target.files[0];
+
+    if(file){
+        const reader = new FileReader();
+
+        reader.onload = function(){
+            image.outerHTML = `
+                <img 
+                src="${reader.result}" 
+                class="profile-photo"
+                id="preview">
+            `;
+        }
+
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+
+<body>
+
+<div class="container">
+
+    <!-- TOP -->
+    <div class="top">
+    <div class="profile-header">
+        <a href="#" onclick="history.back(); return false;" class="back">←</a>
+        <h1>EDIT PROFILE INFORMATION</h1>
+    </div>
+    </div>
+
+
+    <!-- FORM -->
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+
+        <!-- PROFILE PHOTO -->
+        <div class="photo-section">
+
+            {% if user.profile_photo %}
+
+                <img
+                    src="{{ user.profile_photo.url }}"
+                    class="profile-photo"
+                    alt="Profile Photo"
+                >
+
+            {% else %}
+
+                <div class="default-photo">
+                    👤
+                </div>
+
+            {% endif %}
+
+            <label class="photo-label" for="profile_photo">
+                ADD PICTURE
+            </label>
+
+            <div class="photo-input">
+                <input
+                    type="file"
+                    id="profile_photo"
+                    name="profile_photo"
+                    accept="image/*"
+                >
+            </div>
+
+        </div>
+
+
+        <!-- FULL NAME -->
+        <div class="field">
+            <label>Full Name</label>
+
+            <input
+                type="text"
+                name="full_name"
+                value="{{ user.first_name }}{% if user.middle_name %} {{ user.middle_name }}{% endif %} {{ user.last_name }}"
+                required
+            >
+        </div>
+
+
+        <!-- PHONE -->
+        <div class="field">
+            <label>Phone Number</label>
+
+            <input
+                type="text"
+                name="phone"
+                value="{{ user.phone }}"
+                required
+            >
+        </div>
+
+
+        <!-- EMAIL -->
+        <div class="field">
+            <label>Email ID</label>
+
+            <input
+                type="email"
+                name="email"
+                value="{{ user.email }}"
+                required
+            >
+        </div>
+
+
+        <!-- GENDER -->
+        <div class="field">
+            <label>Gender</label>
+
+            <select name="gender">
+
+                <option value="">Select Gender</option>
+
+                <option value="Female"
+                    {% if user.gender == "Female" %}selected{% endif %}>
+                    Female
+                </option>
+
+                <option value="Male"
+                    {% if user.gender == "Male" %}selected{% endif %}>
+                    Male
+                </option>
+
+                <option value="Other"
+                    {% if user.gender == "Other" %}selected{% endif %}>
+                    Other
+                </option>
+
+            </select>
+        </div>
+
+
+        <!-- LANGUAGES -->
+        <div class="field">
+            <label>Languages Spoken</label>
+
+            <input
+                type="text"
+                name="languages_spoken"
+                value="{{ user.languages_spoken }}"
+                placeholder="Eg: English, Malayalam"
+            >
+        </div>
+
+
+        <!-- OCCUPATION -->
+        <div class="field">
+            <label>Occupation</label>
+
+            <select name="occupation">
+
+                <option value="">Select Occupation</option>
+
+                <option value="Student"
+                    {% if user.occupation == "Student" %}selected{% endif %}>
+                    Student
+                </option>
+
+                <option value="Employee"
+                    {% if user.occupation == "Employee" %}selected{% endif %}>
+                    Employee
+                </option>
+
+                <option value="Business"
+                    {% if user.occupation == "Business" %}selected{% endif %}>
+                    Business
+                </option>
+
+                <option value="Other"
+                    {% if user.occupation == "Other" %}selected{% endif %}>
+                    Other
+                </option>
+
+            </select>
+        </div>
+
+
+        <!-- ABOUT ME -->
+        <div class="field">
+            <label>About Me</label>
+
+            <textarea
+                name="about_me"
+                maxlength="500"
+                placeholder="Tell something about yourself..."
+            >{{ user.about_me }}</textarea>
+        </div>
+
+
+        <!-- BUSINESS NAME -->
+        <div class="field">
+            <label>My Business Name</label>
+
+            <input
+                type="text"
+                name="business_name"
+                value="{{ user.business_name }}"
+            >
+        </div>
+
+
+        <!-- PIN CODE -->
+        <div class="field">
+            <label>Pin Code</label>
+
+            <input
+                type="text"
+                name="pin_code"
+                value="{{ user.pin_code }}"
+            >
+        </div>
+
+
+        <!-- CITY -->
+        <div class="field">
+            <label>City</label>
+
+            <input
+                type="text"
+                name="city"
+                value="{{ user.city }}"
+            >
+        </div>
+
+
+        <!-- STATE -->
+        <div class="field">
+            <label>State</label>
+
+            <input
+                type="text"
+                name="state"
+                value="{{ user.state }}"
+            >
+        </div>
+
+
+        <!-- SAVE -->
+        <button type="submit" class="save-btn">
+            Save
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            background: #f7f7f7;
-            font-family: Arial, sans-serif;
+            background: #fff;
+            color: #333;
         }
-        .profile-card {
-            max-width: 500px;
-            margin: 80px auto;
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        .profile-header{
+            display: flex;
+            gap: 10px;
         }
-        .profile-avatar {
-            width: 90px;
-            height: 90px;
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .back {
+            text-decoration: none;
+            color: #333;
+            font-size: 28px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            padding: 15px 20px;
+            color: #555;
+        }
+
+        .active {
+            color: black;
+            border-bottom: 2px solid black;
+        }
+
+        .photo-section {
+            text-align: center;
+            margin: 20px 0 40px;
+        }
+
+        .profile-photo,
+        .default-photo {
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            background: #0d6efd;
-            color: white;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .default-photo {
+            background: #eef2ff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 45px;
+            color: #8aa4e8;
         }
-        .btn-logout {
-            margin-top: 20px;
-            background: #dc3545;
-            color: white;
+
+        .photo-input {
+            margin-top: 10px;
+        }
+
+        .photo-label {
+            color: black;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .photo-input input {
+            display: none;
+        }
+
+        .field {
+            margin-bottom: 22px;
+        }
+
+        .field label {
+            display: block;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
             border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-block;
+            border-bottom: 1px solid #aaa;
+            padding: 8px 0;
+            outline: none;
+            font-size: 15px;
+            background: white;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-bottom: 2px solid black;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .save-btn {
+            width: 100%;
+            border: none;
+            background: black;
+            color: white;
+            padding: 14px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
         }
     </style>
-</head>
-<body>
-    <div class="profile-card">
-        <div class="profile-avatar">{{ user.first_name|first|upper }}</div>
-        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-        <p><strong>Username:</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Phone:</strong> {{ user.phone }}</p>
-        <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
-    </div>
-</body>
+    
 </html>
