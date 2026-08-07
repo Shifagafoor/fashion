@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from .models import User
 
 
-# Create your views here.
 def signup_page(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
@@ -38,14 +37,14 @@ def signup_page(request):
 
         #if any error 
         if errors:
-            return render(request, 'signup.html',{
-                'errors':errors,
-                'first_name':first_name,
-                'middle_name':middle_name,
-                'last_name':last_name,
-                'username':username,
-                'email':email,
-                'phone':phone
+            return render(request, 'signup.html', {
+                'errors': errors,
+                'first_name': first_name,
+                'middle_name': middle_name,
+                'last_name': last_name,
+                'username': username,
+                'email': email,
+                'phone': phone
             })
         else:
             User.objects.create(
@@ -60,19 +59,7 @@ def signup_page(request):
             return redirect('login')
     return render(request, 'signup.html')
 
-def login_page(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
 
-        try:
-            user = User.objects.get(username=username, password=password)
-            return redirect('home')
-        except User.DoesNotExist:
-            return render(request, 'login.html', {
-                'error': 'Invalid username or password'
-            })
-    return render (request, 'login.html')
 def login_page(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -80,38 +67,50 @@ def login_page(request):
 
         try:
             user = User.objects.get(username=username, password=password)
-
-            # Save logged-in user in session
             request.session["user_id"] = user.id
-
             return redirect("home")
-
         except User.DoesNotExist:
             return render(request, "login.html", {
                 "error": "Invalid username or password"
             })
 
     return render(request, "login.html")
+
+
 def profile(request):
     if "user_id" not in request.session:
         return redirect("login")
 
     user = User.objects.get(id=request.session["user_id"])
-
-    return render(request, "profile.html", {
-        "user": user
-    })
+    return render(request, "profile.html", {"user": user})
 
 
 def logout_page(request):
     request.session.flush()
     return redirect("login")
 
+
 def home(request):
-    return render(request, 'index.html')
+    user = None
+    is_logged_in = False
+
+    if request.session.get("user_id"):
+        user = User.objects.filter(id=request.session["user_id"]).first()
+        is_logged_in = user is not None
+
+    return render(request, 'index.html', {
+        'user': user,
+        'is_logged_in': is_logged_in,
+    })
+
+
 def forgot_password(request):
     return render(request, 'forgot_password.html')
+
+
 def reset_password(request):
     return render(request, 'reset_password.html')
+
+
 def verify_otp(request):
     return render(request, 'verify_otp.html')
