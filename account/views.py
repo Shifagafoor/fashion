@@ -172,5 +172,49 @@ def reset_password(request):
     return render(request, "reset_password.html")
 
 
+# VERIFY OTP
 def verify_otp(request):
-    return render(request, "verify_otp.html")
+
+    if request.method == "POST":
+
+        otp1 = request.POST.get("otp1", "")
+        otp2 = request.POST.get("otp2", "")
+        otp3 = request.POST.get("otp3", "")
+        otp4 = request.POST.get("otp4", "")
+        otp5 = request.POST.get("otp5", "")
+        otp6 = request.POST.get("otp6", "")
+
+        entered_otp = (
+            otp1 + otp2 + otp3 +
+            otp4 + otp5 + otp6
+        )
+
+        saved_otp = request.session.get("otp")
+        user_id = request.session.get("otp_user_id")
+
+
+        if not saved_otp or not user_id:
+
+            return render(request, "verify-otp.html", {
+                "error": "OTP expired. Please login again."
+            })
+
+
+        if entered_otp == saved_otp:
+
+            request.session["user_id"] = user_id
+
+            request.session.pop("otp", None)
+            request.session.pop("otp_user_id", None)
+
+            return redirect("home")
+
+
+        else:
+
+            return render(request, "verify-otp.html", {
+                "error": "Invalid OTP. Please try again."
+            })
+
+
+    return render(request, "verify-otp.html")

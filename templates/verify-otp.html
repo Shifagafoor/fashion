@@ -1,117 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Verify OTP | Majestic</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            min-height: 100vh;
+        }
+
+        .otp-container {
+            width: 420px;
+
+            background: #fff;
+
+            padding: 40px;
+
+            border-radius: 15px;
+
+            text-align: center;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+        }
+
+        h2 {
+            color: #111;
+
+            margin-bottom: 12px;
+        }
+
+        p {
+            color: #666;
+
+            margin-bottom: 25px;
+
+            font-size: 15px;
+
+            line-height: 1.5;
+        }
+
+        .error {
+            color: red;
+
+            font-size: 14px;
+
+            margin-bottom: 15px;
+        }
+
+        .otp-box {
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 30px;
+        }
+
+        .otp-box input {
+            width: 50px;
+            height: 55px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            font-size: 22px;
+
+            outline: none;
+        }
+
+        .otp-box input:focus {
+            border: 2px solid #000;
+        }
+
+        button {
+            width: 100%;
+
+            padding: 14px;
+
+            background: #000;
+
+            color: #fff;
+
+            border: none;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .resent {
+            margin-top: 20px;
+
+            color: #666;
+
+            font-size: 14px;
+        }
+
+        .resent a {
+            text-decoration: none;
+
+            color: #000;
+
+            font-weight: 600;
+        }
+
+        @media (max-width: 500px) {
+
+            .otp-container {
+                width: 90%;
+
+                padding: 30px 20px;
+            }
+
+            .otp-box input {
+                width: 43px;
+                height: 50px;
+            }
+
+        }
+
+    </style>
 
 </head>
+
+
 <body>
-    <div class="otp-container">
-        <h2>Email Verification</h2>
-        <p>We've sent a 6-digit verification code to your email.</p>
-        <form action="#" method="post">
-            <div class="otp-box">
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-                <input type="text" maxlength="1" required>
-            </div>
-            <button type="submit">verify OTP</button>
-        </form>
-        <div class="resent">
-            Didn't receive the code?
-            <a href="#">Resend OTP</a>
+
+
+<div class="otp-container">
+
+
+    <h2>
+        Email Verification
+    </h2>
+
+
+    <p>
+        Enter the 6-digit verification code to continue.
+    </p>
+
+
+    <!-- ERROR -->
+
+    {% if error %}
+
+        <div class="error">
+            {{ error }}
         </div>
+
+    {% endif %}
+
+
+
+    <!-- OTP FORM -->
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="otp-box">
+
+
+            <input
+                type="text"
+                name="otp1"
+                maxlength="1"
+                inputmode="numeric"
+                required
+                autofocus
+            >
+
+
+            <input
+                type="text"
+                name="otp2"
+                maxlength="1"
+                inputmode="numeric"
+                required
+            >
+
+
+            <input
+                type="text"
+                name="otp3"
+                maxlength="1"
+                inputmode="numeric"
+                required
+            >
+
+
+            <input
+                type="text"
+                name="otp4"
+                maxlength="1"
+                inputmode="numeric"
+                required
+            >
+
+
+            <input
+                type="text"
+                name="otp5"
+                maxlength="1"
+                inputmode="numeric"
+                required
+            >
+
+
+            <input
+                type="text"
+                name="otp6"
+                maxlength="1"
+                inputmode="numeric"
+                required
+            >
+
+
+        </div>
+
+
+        <!-- VERIFY -->
+
+        <button type="submit">
+            Verify OTP
+        </button>
+
+
+    </form>
+
+
+    <div class="resent">
+
+        Didn't receive the code?
+
+        <a href="#">
+            Resend OTP
+        </a>
+
     </div>
-</body>
-<style>
-    *{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'poppins', sans-serif;
-    }
-    body{
-        background: #f5f5f5;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-    .otp-container{
-        width: 420px;
-        background: #fff;
-        padding: 40px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,.15);
-    }
-    h2{
-        color: #fff;
-        margin-bottom: 30px;
-    }
-    p{
-        color: #666;
-        margin-bottom:10px;
-        font-size: 15px;
-    }
-    .otp-box{
-        display:flex;
-        justify-content: space-between;
-        margin-bottom: 30px;
-    }
-    .otp-box input{
-        width: 50px;
-        height: 55px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        text-align: center;
-        font-size: 22px;
-        outline: none;
-    }
-    .otp-box input:focus{
-        border: 2px solid #000;
-    }
-    button{
-        width: 100%;
-        padding: 14px;
-        background: #000;
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    .resent{
-        margin-top: 20px;
-    }
-    .resent a{
-        text-decoration: none;
-        color: #000;
-        font-weight: 600;
-    }
 
 
-</style>
+</div>
+
+
+
 <script>
-    const inputs = document.querySelectorAll(".otp-box input");
+
+const inputs = document.querySelectorAll(".otp-box input");
+
 
 inputs.forEach((input, index) => {
-    input.addEventListener("input", () => {
-        if (input.value.length === 1 && index < inputs.length - 1) {
+
+
+    /* ONLY ALLOW NUMBERS */
+
+    input.addEventListener("input", function () {
+
+        this.value = this.value.replace(/[^0-9]/g, "");
+
+
+        if (
+            this.value.length === 1 &&
+            index < inputs.length - 1
+        ) {
+
             inputs[index + 1].focus();
+
         }
+
     });
 
-    input.addEventListener("keydown", (e) => {
-        if (e.key === "Backspace" && input.value === "" && index > 0) {
+
+    /* BACKSPACE */
+
+    input.addEventListener("keydown", function (event) {
+
+        if (
+            event.key === "Backspace" &&
+            this.value === "" &&
+            index > 0
+        ) {
+
             inputs[index - 1].focus();
+
         }
+
     });
+
+
 });
+
+
 </script>
+
+
+</body>
+
 </html>
