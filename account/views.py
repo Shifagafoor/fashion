@@ -1,9 +1,20 @@
+import random
+
 from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.conf import settings
+
 from .models import User
 
 
+# =========================
+# SIGNUP
+# =========================
+
 def signup_page(request):
+
     if request.method == 'POST':
+
         first_name = request.POST['first_name']
         middle_name = request.POST['middle_name']
         last_name = request.POST['last_name']
@@ -28,6 +39,7 @@ def signup_page(request):
             errors['phone_error'] = "Phone number already exists!"
 
         if errors:
+
             return render(request, 'signup.html', {
                 'errors': errors,
                 'first_name': first_name,
@@ -53,23 +65,58 @@ def signup_page(request):
     return render(request, 'signup.html')
 
 
-# LOGIN
+# =========================
+# LOGIN + OTP
+# =========================
+
 def login_page(request):
+
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
 
         try:
+
             user = User.objects.get(
                 username=username,
                 password=password
             )
 
-            request.session["user_id"] = user.id
+            # Generate 6 digit OTP
+            otp = str(random.randint(100000, 999999))
 
-            return redirect("home")
+            # Save OTP in session
+            request.session["otp"] = otp
+
+            # Save user ID in session
+            request.session["otp_user_id"] = user.id
+
+            # Send OTP to user's email
+            send_mail(
+                subject="Your Majestic Login OTP",
+                message=f"""
+Hello {user.first_name},
+
+Your OTP for login is:
+
+{otp}
+
+Please enter this OTP on the verification page.
+
+Thank you,
+Majestic
+""",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+
+            # Open OTP verification page
+            return redirect("verify_otp")
 
         except User.DoesNotExist:
+
             return render(request, "login.html", {
                 "error": "Invalid username or password"
             })
@@ -77,8 +124,68 @@ def login_page(request):
     return render(request, "login.html")
 
 
+# =========================
+# VERIFY OTP
+# =========================
+
+def verify_otp(request):
+
+    if request.method == "POST":
+
+        otp1 = request.POST.get("otp1", "")
+        otp2 = request.POST.get("otp2", "")
+        otp3 = request.POST.get("otp3", "")
+        otp4 = request.POST.get("otp4", "")
+        otp5 = request.POST.get("otp5", "")
+        otp6 = request.POST.get("otp6", "")
+
+        entered_otp = (
+            otp1 +
+            otp2 +
+            otp3 +
+            otp4 +
+            otp5 +
+            otp6
+        )
+
+        saved_otp = request.session.get("otp")
+        user_id = request.session.get("otp_user_id")
+
+        # Check whether OTP exists
+        if not saved_otp or not user_id:
+
+            return render(request, "verify-otp.html", {
+                "error": "OTP expired. Please login again."
+            })
+
+        # Check OTP
+        if entered_otp == saved_otp:
+
+            # Login user
+            request.session["user_id"] = user_id
+
+            # Remove OTP from session
+            request.session.pop("otp", None)
+            request.session.pop("otp_user_id", None)
+
+            # Go to home
+            return redirect("home")
+
+        else:
+
+            return render(request, "verify-otp.html", {
+                "error": "Invalid OTP. Please try again."
+            })
+
+    return render(request, "verify-otp.html")
+
+
+# =========================
 # PROFILE
+# =========================
+
 def profile(request):
+
     if "user_id" not in request.session:
         return redirect("login")
 
@@ -91,45 +198,39 @@ def profile(request):
     })
 
 
-# LOGOUT
-def logout_page(request):
-    request.session.flush()
-    return redirect("login")
-
-
-# HOME
-def home(request):
-    user = None
-    is_logged_in = False
-
-    if request.session.get("user_id"):
-        user = User.objects.filter(
-            id=request.session["user_id"]
-        ).first()
-
-        is_logged_in = user is not None
-
-    return render(request, "index.html", {
-        "user": user,
-        "is_logged_in": is_logged_in,
-    })
+# =========================
+# ACCOUNT
+# =========================
 
 def account(request):
+
     if "user_id" not in request.session:
         return redirect("login")
 
-    user = User.objects.get(id=request.session["user_id"])
+    user = User.objects.get(
+        id=request.session["user_id"]
+    )
 
     return render(request, "account.html", {
         "user": user
     })
+
+
+# =========================
+# EDIT PROFILE
+# =========================
+
 def edit_profile(request):
+
     if "user_id" not in request.session:
         return redirect("login")
 
-    user = User.objects.get(id=request.session["user_id"])
+    user = User.objects.get(
+        id=request.session["user_id"]
+    )
 
     if request.method == "POST":
+
         user.first_name = request.POST.get("first_name", "")
         user.middle_name = request.POST.get("middle_name", "")
         user.last_name = request.POST.get("last_name", "")
@@ -156,65 +257,71 @@ def edit_profile(request):
     })
 
 
+# =========================
+# LOGOUT
+# =========================
+
+def logout_page(request):
+
+    request.session.flush()
+
+    return redirect("login")
+
+
+# =========================
+# HOME
+# =========================
+
+def home(request):
+
+    user = None
+    is_logged_in = False
+
+    if request.session.get("user_id"):
+
+        user = User.objects.filter(
+            id=request.session["user_id"]
+        ).first()
+
+        is_logged_in = user is not None
+
+    return render(request, "index.html", {
+        "user": user,
+        "is_logged_in": is_logged_in,
+    })
+
+
+# =========================
+# HELP CENTER
+# =========================
+
 def help_center(request):
+
     return render(request, "help_center.html")
 
 
+# =========================
+# PAYMENT & REFUND
+# =========================
+
 def payment_refund(request):
+
     return render(request, "payment_refund.html")
 
 
+# =========================
+# FORGOT PASSWORD
+# =========================
+
 def forgot_password(request):
+
     return render(request, "forgot_password.html")
 
 
+# =========================
+# RESET PASSWORD
+# =========================
+
 def reset_password(request):
+
     return render(request, "reset_password.html")
-
-
-# VERIFY OTP
-def verify_otp(request):
-
-    if request.method == "POST":
-
-        otp1 = request.POST.get("otp1", "")
-        otp2 = request.POST.get("otp2", "")
-        otp3 = request.POST.get("otp3", "")
-        otp4 = request.POST.get("otp4", "")
-        otp5 = request.POST.get("otp5", "")
-        otp6 = request.POST.get("otp6", "")
-
-        entered_otp = (
-            otp1 + otp2 + otp3 +
-            otp4 + otp5 + otp6
-        )
-
-        saved_otp = request.session.get("otp")
-        user_id = request.session.get("otp_user_id")
-
-
-        if not saved_otp or not user_id:
-
-            return render(request, "verify-otp.html", {
-                "error": "OTP expired. Please login again."
-            })
-
-
-        if entered_otp == saved_otp:
-
-            request.session["user_id"] = user_id
-
-            request.session.pop("otp", None)
-            request.session.pop("otp_user_id", None)
-
-            return redirect("home")
-
-
-        else:
-
-            return render(request, "verify-otp.html", {
-                "error": "Invalid OTP. Please try again."
-            })
-
-
-    return render(request, "verify-otp.html")
