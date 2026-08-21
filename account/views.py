@@ -315,7 +315,7 @@ def payment_refund(request):
 
 def forgot_password(request):
 
-    return render(request, "forgot_password.html")
+    return render(request, "forgot-password.html")
 
 
 # =========================
@@ -324,4 +324,4 @@ def forgot_password(request):
 
 def reset_password(request):
 
-    return render(request, "reset_password.html")
+    return render(request, "reset-password.html")
