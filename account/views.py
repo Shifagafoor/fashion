@@ -324,4 +324,4 @@ def forgot_password(request):
 
 def reset_password(request):
 
-    return render(request, "reset-password.html")
+    return render(request,  "reset-password.html") 
